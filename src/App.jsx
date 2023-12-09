@@ -4,6 +4,7 @@ import Main from './components/Main';
 import Error from './components/Error';
 import Loader from './components/Loader';
 import { useReducer } from 'react';
+import StartScreen from './components/StartScreen';
 
 const initialState = {
   questions: [],
@@ -29,6 +30,7 @@ function reducer(state, action) {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const numOfQuestions = state.questions.length;
   useEffect(function () {
     async function getQuestions() {
       try {
@@ -50,6 +52,9 @@ function App() {
       <Main>
         {state.status === 'loading' && <Loader />}
         {state.status === 'error' && <Error />}
+        {state.status === 'ready' && (
+          <StartScreen numOfQuestions={numOfQuestions} />
+        )}
       </Main>
     </div>
   );
