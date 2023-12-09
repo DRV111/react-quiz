@@ -5,6 +5,7 @@ import Error from './components/Error';
 import Loader from './components/Loader';
 import { useReducer } from 'react';
 import StartScreen from './components/StartScreen';
+import Questions from './components/Questions';
 
 const initialState = {
   questions: [],
@@ -22,6 +23,11 @@ function reducer(state, action) {
       return {
         ...state,
         status: 'error',
+      };
+    case 'startQuiz':
+      return {
+        ...state,
+        status: 'active',
       };
     default:
       throw new Error('Unknown action');
@@ -53,8 +59,9 @@ function App() {
         {state.status === 'loading' && <Loader />}
         {state.status === 'error' && <Error />}
         {state.status === 'ready' && (
-          <StartScreen numOfQuestions={numOfQuestions} />
+          <StartScreen numOfQuestions={numOfQuestions} dispatch={dispatch} />
         )}
+        {state.status === 'active' && <Questions />}
       </Main>
     </div>
   );
