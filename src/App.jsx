@@ -47,7 +47,10 @@ function App() {
   return (
     <div className="app">
       <Header />
-      <Main>{state.status === 'loading' && <Loader />}</Main>
+      <Main>
+        {state.status === 'loading' && <Loader />}
+        {state.status === 'error' && <Error />}
+      </Main>
     </div>
   );
 }
