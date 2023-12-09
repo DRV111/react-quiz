@@ -10,7 +10,9 @@ import Questions from './components/Questions';
 const initialState = {
   questions: [],
   status: 'loading',
+  index: 0,
 };
+
 function reducer(state, action) {
   switch (action.type) {
     case 'dataRecieved':
@@ -61,7 +63,9 @@ function App() {
         {state.status === 'ready' && (
           <StartScreen numOfQuestions={numOfQuestions} dispatch={dispatch} />
         )}
-        {state.status === 'active' && <Questions />}
+        {state.status === 'active' && (
+          <Questions question={state.questions[state.index]} />
+        )}
       </Main>
     </div>
   );
