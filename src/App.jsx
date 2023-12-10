@@ -10,6 +10,9 @@ import NextButton from './components/NextButton';
 import ProgressBar from './components/ProgressBar';
 import FinishScreen from './components/FinishScreen';
 import Footer from './components/Footer';
+import Timer from './components/Timer';
+
+const SECS_PER_QUESTION = 30;
 
 const initialState = {
   questions: [],
@@ -18,6 +21,7 @@ const initialState = {
   answer: null,
   points: 0,
   highscore: 0,
+  timeRemain: null,
 };
 
 function reducer(state, action) {
@@ -37,6 +41,7 @@ function reducer(state, action) {
       return {
         ...state,
         status: 'active',
+        timeRemain: state.questions.length * SECS_PER_QUESTION,
       };
     case 'newAnswer': {
       const question = state.questions.at(state.index);
@@ -70,6 +75,13 @@ function reducer(state, action) {
         answer: null,
         points: 0,
         questions: state.questions,
+        timeRemain: 20,
+      };
+    case 'tick':
+      return {
+        ...state,
+        timeRemain: state.timeRemain - 1,
+        status: state.timeRemain === 0 ? 'finished' : state.status,
       };
     default:
       throw new Error('Unknown action');
@@ -124,6 +136,7 @@ function App() {
                 dispatch={dispatch}
                 answer={state.answer}
               />
+              <Timer time={state.timeRemain} dispatch={dispatch} />
               <NextButton
                 dispatch={dispatch}
                 answer={state.answer}
