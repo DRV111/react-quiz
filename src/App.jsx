@@ -8,6 +8,7 @@ import StartScreen from './components/StartScreen';
 import Questions from './components/Questions';
 import NextButton from './components/NextButton';
 import ProgressBar from './components/ProgressBar';
+import FinishScreen from './components/FinishScreen';
 
 const initialState = {
   questions: [],
@@ -51,6 +52,11 @@ function reducer(state, action) {
         ...state,
         index: state.index + 1,
         answer: null,
+      };
+    case 'finishQuiz':
+      return {
+        ...state,
+        status: 'finished',
       };
     default:
       throw new Error('Unknown action');
@@ -104,8 +110,20 @@ function App() {
               dispatch={dispatch}
               answer={state.answer}
             />
-            <NextButton dispatch={dispatch} answer={state.answer} />
+            <NextButton
+              dispatch={dispatch}
+              answer={state.answer}
+              numOfQuestions={numOfQuestions}
+              indx={state.index}
+            />
           </>
+        )}
+        {state.status === 'finished' && (
+          <FinishScreen
+            dispatch={dispatch}
+            points={state.points}
+            sumOfPoints={sumOfPoints}
+          />
         )}
       </Main>
     </div>
