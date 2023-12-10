@@ -9,6 +9,7 @@ import Questions from './components/Questions';
 import NextButton from './components/NextButton';
 import ProgressBar from './components/ProgressBar';
 import FinishScreen from './components/FinishScreen';
+import Footer from './components/Footer';
 
 const initialState = {
   questions: [],
@@ -117,17 +118,19 @@ function App() {
               sumOfPoints={sumOfPoints}
               answer={state.answer}
             />
-            <Questions
-              question={state.questions[state.index]}
-              dispatch={dispatch}
-              answer={state.answer}
-            />
-            <NextButton
-              dispatch={dispatch}
-              answer={state.answer}
-              numOfQuestions={numOfQuestions}
-              indx={state.index}
-            />
+            <Footer>
+              <Questions
+                question={state.questions[state.index]}
+                dispatch={dispatch}
+                answer={state.answer}
+              />
+              <NextButton
+                dispatch={dispatch}
+                answer={state.answer}
+                numOfQuestions={numOfQuestions}
+                indx={state.index}
+              />
+            </Footer>
           </>
         )}
         {state.status === 'finished' && (
