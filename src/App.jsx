@@ -7,6 +7,7 @@ import { useReducer } from 'react';
 import StartScreen from './components/StartScreen';
 import Questions from './components/Questions';
 import NextButton from './components/NextButton';
+import ProgressBar from './components/ProgressBar';
 
 const initialState = {
   questions: [],
@@ -58,7 +59,13 @@ function reducer(state, action) {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
+
   const numOfQuestions = state.questions.length;
+  const sumOfPoints = state.questions.reduce(
+    (prev, cur) => prev + cur.points,
+    0
+  );
+
   useEffect(function () {
     async function getQuestions() {
       try {
@@ -85,6 +92,13 @@ function App() {
         )}
         {state.status === 'active' && (
           <>
+            <ProgressBar
+              points={state.points}
+              numOfQuestions={numOfQuestions}
+              indx={state.index}
+              sumOfPoints={sumOfPoints}
+              answer={state.answer}
+            />
             <Questions
               question={state.questions[state.index]}
               dispatch={dispatch}
