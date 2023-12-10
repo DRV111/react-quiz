@@ -16,6 +16,7 @@ const initialState = {
   index: 0,
   answer: null,
   points: 0,
+  highscore: 0,
 };
 
 function reducer(state, action) {
@@ -57,6 +58,8 @@ function reducer(state, action) {
       return {
         ...state,
         status: 'finished',
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
       };
     default:
       throw new Error('Unknown action');
@@ -123,6 +126,7 @@ function App() {
             dispatch={dispatch}
             points={state.points}
             sumOfPoints={sumOfPoints}
+            highscore={state.highscore}
           />
         )}
       </Main>
