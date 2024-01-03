@@ -14,77 +14,78 @@ const initialState = {
   timeRemain: null,
 };
 
+function reducer(state, action) {
+  switch (action.type) {
+    case 'dataRecieved':
+      return {
+        ...state,
+        questions: action.payload,
+        status: 'ready',
+      };
+    case 'dataFailed':
+      return {
+        ...state,
+        status: 'error',
+      };
+    case 'startQuiz':
+      return {
+        ...state,
+        status: 'active',
+        timeRemain: state.questions.length * SECS_PER_QUESTION,
+      };
+    case 'newAnswer': {
+      const question = state.questions.at(state.index);
+      return {
+        ...state,
+        answer: action.payload,
+        points:
+          action.payload === question.correctOption
+            ? state.points + question.points
+            : state.points,
+      };
+    }
+    case 'nextQuestion':
+      return {
+        ...state,
+        index: state.index + 1,
+        answer: null,
+      };
+    case 'finishQuiz':
+      return {
+        ...state,
+        status: 'finished',
+        highscore:
+          state.points > state.highscore ? state.points : state.highscore,
+      };
+    case 'restart':
+      return {
+        ...state,
+        status: 'ready',
+        index: 0,
+        answer: null,
+        points: 0,
+        questions: state.questions,
+        timeRemain: 20,
+      };
+    case 'tick':
+      return {
+        ...state,
+        timeRemain: state.timeRemain - 1,
+        status: state.timeRemain === 0 ? 'finished' : state.status,
+      };
+    default:
+      throw new Error('Unknown action');
+  }
+}
+
 function QuizzProvider({ children }) {
   const [
-    { questions, status, index, answer, points, highscore, time },
+    { questions, status, index, answer, points, highscore, timeRemain },
     dispatch,
   ] = useReducer(reducer, initialState);
   const numOfQuestions = questions.length;
   const sumOfPoints = questions.reduce((prev, cur) => prev + cur.points, 0);
 
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'dataRecieved':
-        return {
-          ...state,
-          questions: action.payload,
-          status: 'ready',
-        };
-      case 'dataFailed':
-        return {
-          ...state,
-          status: 'error',
-        };
-      case 'startQuiz':
-        return {
-          ...state,
-          status: 'active',
-          timeRemain: state.questions.length * SECS_PER_QUESTION,
-        };
-      case 'newAnswer': {
-        const question = state.questions.at(state.index);
-        return {
-          ...state,
-          answer: action.payload,
-          points:
-            action.payload === question.correctOption
-              ? state.points + question.points
-              : state.points,
-        };
-      }
-      case 'nextQuestion':
-        return {
-          ...state,
-          index: state.index + 1,
-          answer: null,
-        };
-      case 'finishQuiz':
-        return {
-          ...state,
-          status: 'finished',
-          highscore:
-            state.points > state.highscore ? state.points : state.highscore,
-        };
-      case 'restart':
-        return {
-          ...state,
-          status: 'ready',
-          index: 0,
-          answer: null,
-          points: 0,
-          questions: state.questions,
-          timeRemain: 20,
-        };
-      case 'tick':
-        return {
-          ...state,
-          timeRemain: state.timeRemain - 1,
-          status: state.timeRemain === 0 ? 'finished' : state.status,
-        };
-      default:
-        throw new Error('Unknown action');
-    }
-  }
   useEffect(function () {
     async function getQuestions() {
       try {
@@ -112,7 +113,7 @@ function QuizzProvider({ children }) {
         answer,
         points,
         highscore,
-        time,
+        timeRemain,
         dispatch,
       }}
     >

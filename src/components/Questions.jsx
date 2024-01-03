@@ -1,10 +1,13 @@
+import { useQuizz } from '../context/QuizzContext';
 import QuestionItem from './QuestionItem';
 
-function Questions({ question, dispatch, answer }) {
+function Questions() {
+  const { questions, index } = useQuizz();
+  const question = questions.at(index);
   return (
     <div className="container">
       <h4>{question.question}</h4>
-      <QuestionItem answer={answer} dispatch={dispatch} question={question} />
+      <QuestionItem question={question} />
     </div>
   );
 }
